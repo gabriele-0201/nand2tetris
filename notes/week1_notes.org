@@ -1,0 +1,177 @@
+
+* Boolean Logic
+
+** Formula/boolean expression -> Truth Table
+
+** Booloan Identities
++ Commutative Laws
++ Associative Laws
++ Distributive Laws (su AND e OR)
+  (x OR (y AND z)) = ((x OR y) AND (x or z))
++ De Morgan Laws
++ Idempotence Laws
+  x AND x = x
+
+* Boolean Function Synthesis
+
+** Truth table -> boolean function
+
+How works the construction of a Conjuntive Normal Form?
+
+We define a Boolan function equal to one ONLY on a raw where the result is one, after you put OR between each function defined earlier
+
+** Find the shortes expression to an equivalent one
+np problem
+
+** AND, OR, NOT -> you create everything
+NAND can be used to compute EVERY boolan function
+
+* Logic Gates
+** Logic gate
+a stand alone chip used to define well known functionalities
+*** Elementary
+Nand, and, ...
+*** Composite
+mux, ...
+
+** Nand
+
+** Gate Interface != Gate Implementation
+for a single interface you can have multiple Implementations
+
+* HDL
+
+Completelly declarative (not procedural), it will be parsed by the Hardware simulator
+
+You need to kwno the interface of a port to use it
+
+HDL langauge:
++ CHDL
++ Verilog
+
+
+
+** Implementation given and, or and not
+
+
+#+BEGIN_SRC
+/* xor(a,b) = (not(a) and b) or (a and not(b)) */
+
+CHIP Xor {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    // Implementation (textual description of the gate interface graphs)
+
+    Not(in=a, out=nota)
+    Not(in=b, out=notb)
+
+    And(a = a, b = notb, out=aAndNotb)
+    And(a = nota, b = b, out=NotaAndb)
+
+    Or(a=aAndNotb, b=NotaAndb, out=out)
+}
+#+END_SRC
+
+* Hardware Simulator (HS)
+Load HDL file into HS
+
+load the script in the HS and execute the scripts against the loaded HDL -> this produce outputs
+
+
+** Test suit
+extension: .tst
+it loads the chip and set input and eval
+
+can be setted an output file
+
+*** Compare File
+Created with Behaviourla simulaiton ->
+
+** HS info
+there are multiple possibilities
+
+** Players
++ System Architecs -> It does behavioural simulations and other stuff
+  It decide wich chips are needed and then for each chip create:
+  - Chip API
+  - test script
+  - compare file
++ Developers -> it delevops now what created and required by the system architect
+
+* Multi-Bit Buses
+
+group of bits -> "bus"
+
+hdl useually gives some notaions to handle it
+
+#+BEGIN_SRC
+CHIP add16 {
+IN a[16], b[16]
+OUT out[16]
+
+PARTS:
+// ...
+}
+#+END_SRC
+
+#+BEGIN_SRC
+CHIP add16 {
+IN first[16], second[16], third[16]
+OUT out[16]
+
+PARTS:
+    Add16(a=first, b=second, out=temp);
+    Add16(a=temp, b=third, out=out);
+}
+#+END_SRC
+
+#+BEGIN_SRC
+CHIP And4Way {
+IN a[4]
+OUT out
+
+PARTS:
+    AND(a=a[0], b=a[1], out=t01);
+    AND(a=t01, b=a[2], out=t02);
+    AND(a=t02, b=a[3], out=out);
+}
+#+END_SRC
+
+** Sub-buses
+Is possible to use sub-range to split a bus into multiple
+`(a[0..7]=lsb, a[8..15]=msb)`
+
+"estremi sono comprensivi"
+
++ overlaps are allowed
++ width of internal pid is deduced automatically
++ "false" and "true" ma be used with buffer of any width
+* PROJECT
+Goal: build 15 different logic gates, those will be the foundations to build all the more complex parts of the computer
+
+** Multiplexor
+
+IN a, b, sel
+OUT out
+
+if(sel == 0)
+    out = a
+else
+    out = b
+
+** Demultiplexor
+IN in, sel
+OUT a, b
+
+if (sel == 0)
+    {a, b} = {in, 0}
+else
+    {a, b} = {0, in}
+
+** And16
+Using the syntax of sub buses should be straigthforward the implementation of an and between 16 bits
+
+** NAMES
+there is a survival guide whith all the name of the chips
