@@ -193,5 +193,27 @@ there is a survival guide whith all the name of the chips
 Not(in) = Nand(in, in)
 
 ** And
-
 And(a, b) = Not(Nand(a, b))
+
+** Or
+
+Not(Or(a, b)) = And(Not(a), Not(b))
+
+Or(a, b) = Not(Not(Or(a, b))) = Not(And(Not(a), Not(b)))
+Or(a, b) = Nand(Not(a), Not(b))
+
+** Xor
+Xor(a, b) = Or((And(Not(a), b)), And(a, Not(b)))
+Xor(a, b) =
+
+** Mux
+Mux(a, b, sel) = Or(And(Not(a), b, c), And(a, Not(b), Not(c)),
+                     And(a, b, Not(c)), And(a, b, c))
+
+= (~a and b and c) or (a and ~b and ~c) or (a and b and ~c) or (a and b and c)
+
+** DMux
+a = in and ~sel
+a = in and sel
+
+** Not16
