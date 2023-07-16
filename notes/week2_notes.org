@@ -1,0 +1,85 @@
+
+* Binary Numbers
+
+* Binary Addition
+
+Usually the last carry bit is ignored -> the addition that overflow is truncated
+
+** Half Adder
+IN a,b
+OUT sum, carry
+
+** Full Adder
+IN a, b, c
+OUT sum, carry
+
+** Multi-bit Adder
+IN a[16], b[16]
+OUT out[16]
+
+* Negative numbers
+2's Complement -> the msb has a negative effect,m so -2^n
+
+The standard addition is modulo 2^n, this makes possible the addition in 2's complement as standard Mutli-bit adder
+
+
+** Subtractions
+y - x = y + (-x)
+
+** Computing -x from x
+2^n - x = 1 + (2^n - 1) - x
+
+Not(x) + 1 = -x
+
+** Add 1
+
+* Arithmetic Logic Unit
+
+Von Neumann Arhitecture, it covers the ALU
+
+ALU computes a function (pre-defined functions) on two inputs
+
+** Hack ALU
+
++ Operates on two 16-bit, 2's complement inputs (x, y)
++ output 16 bits, 2's complement
++ 6 selectors biots
++ compute 18 functions
++ also output two more bits
+
+*** There is a truth table to select a specif function
+
+*** Oprations
+The bits in the order from zx to no apply different function to the input and this makes possible the creation of complex function
+
+**** Pre Setting X
+if zx == 1 => x = 0
+
+if nx == 1 => x = !x
+
+**** Pre Setting Y
+if zy == 1 => y = 0
+
+if zx == 1 => y = !y
+
+**** Select +_ or &
+if f == 1 => out = x + y
+else => out = x & y
+
+**** post-setting
+if no == 1 => out = !out
+
+
+*** Control BITS
+if out == 0 => zr = 1
+else => zr = 0
+
+if out < 0 => ng = 1
+else => ng = 0
+
+* Make Adder more efficient
+Carry Look Ahead
+
+in the standard implementation of an Adder there is a chain of FullAdder to manage the carry but there is another way to make the adder FASTER
+
+the solution is the carry look ahead where the carry is not chained but exists way to evaluate a carry for a specific bit waithout waiting for all the chain to be computed. this make things LESS efficient because there are more chips and electrons moving around but it is FASTER because no need fot the chained carry to be evaluated

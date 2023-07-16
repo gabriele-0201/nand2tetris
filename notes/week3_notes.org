@@ -1,0 +1,124 @@
+
+* SEQUENTIAL Logic
++ We want to use the same hardware overtime
++ We want to remember the "state" between usage
++ Deal with speed
+
+** The Clock
+Nothing changes while a integer time step
+
+as long as the clock cycle is NOT too fast we can't ignore everything that happen at the beginnig of the cycle because eletronic does not change immediately but require some little time
+
+The goal is to have a clock that wait for the harware to stabilize -> is define a 'gray area' where the hardware will change and the clock will ignore, the integer step units and the duration should be enough to avoid the physical stuff
+
+** Combinatorial VS Sequential LOGIC
+
+combinatorial: out[t] = function(in[t]) (everyghin happen in the same time unit)
+
+sequential: out[t] = function(in[t-1]) (there is a dependecy with the past input)
+
+** STATE
+iputn and output are in the same place, this means that we start from something and new states are built on top of the previous
+
+as in sequential logic -> at time 1 we have a then time 2 f(a) and then time 3 g(f(a)) -> we have some sort of STATES (we see thing sequentially)
+
+* FLIP FLOPS
+Elements that allow to save the state
+
+To make possible the sequential change of state we need a piece of hardware where we can move a bit from time t to t+1 and compute the new output
+
+(the gate is remembering the state between time units)
+
+
+
+** D Flip Flop
+one input and one output, it remember an input at one time unit and then throw it in the next time unit
+
+RECAP: Un D Flip Flop e' semplicemente un chi che ha un ingresso ad una uscita, OGNI volta restituisce l'ingresso al tempo precedente mentre ne riceve uno nuovo
+
+the flop needs to be built a REAL clock attached to it to break down the physical time into discrete time (we will JUST consider the discrete time)
+
+A D Flip Flop is given as a PRIMITIVE even if it could be built from nand gates (just because creating the discrete time from the continue time is very weird)
+
+** 1-Bit Register
+remember a bit forever
+
+IN in, load
+OUT output
+
+if load = 1 => then remember the input at time n
+otherwise remember the output for infinity
+
+if load(t - 1) => out(t) = in(t - 1)
+else out(t) = out(t - 1)
+
+*** How?
+
+#+ATTR_HTML: :widht 10
+
+[[file:images/1_bit_register.png]]
+
+That's the implementation of an 1 bit memory
+
+* MEMORY UNITS
+
+Memory:
++ Main Memory (RAM and others)
++ Secondary Memory (dsicks, ssd, ...)
+
+Volatile != non-volatile
+
+Ram usually store Data and Instructions
+
+
+** Registers
+Elementary building block for memory, Registers are just buch of multi single bit registers
+
+word-registers = 16-bits-registers
+
+Register's state -> value currently stored inside the register
+
+The output of the register eject just the state of the register
+
+** RAM unit
+sequence of addressable registers (0 to n-1)
+
+**at any given point of time, only one register is the RAM is selected** (at any given point of time we need to specify a single register, the POINTER)
+
+ofc if we have n registers log2(n) is the number of bits needed to address all the registers
+
+RAM is a sequential CHIP
+
+
+*** How read from RAM?
+We set the address to i and then we probe the out (that's the value store in the register i)
+*** How write in RAM?
+we set address to i, the value in to v and then load to 1
+
+the result is that from the next cycle the register i out the value v
+
+*** RAM8
+*** RAM64
+*** RAM512
+*** RAM4K
+*** RAM16K
+
+** Random Access Memory
+irrespective the size of this chip I can access a specific register in the same acces time
+
+* Counters
+3 operations made by the counter:
++ reset: fetch the first instruction (PC = 0)
++ next: fetch the next instruction (PC++)
++ goto: fetch instuction n (PC = n)
+
+The counter CHIP has 4 input:
+input, load, inc, reset
+
+and the output
+
+if load => out[t+1] = in[t]
+else if in => out[t + 1] = out[t] + 1
+else => out[t + 1] = 0
+
+* Overview
