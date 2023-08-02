@@ -1,0 +1,122 @@
+* Machine Languages
+** Overview
+Alan Turing -> concept of computing machine
+Von Neunmann -> first architecture of a general computing machine
+
+*** Instructions
+
+There is a binary representation between binary and symbolic format (assembly format)
+
+**** Assembly language
+it simplyfy a lot of things, examples are symbols
+
+like index to represent a certain area of the memory!
+
+** Machine languages Elements
+The assembly language is in an hardware sense WHAT the computer is able to do! The more complex the instructions are the more complex the silicon and architcture is required
+
+
+*** Memory Hierarchy
+Instead of having one big block of memory there wil be a sequence of memory from faster and smaller to bigger and slower.
+
+smallest memory: registers, they are inside the cpu and they are part of the machine languages
+
+There are
++ Data registers (where values are contained and used to perform operation)
++ Address registers (memory address will be contained in the registers)
++ Immediate (a way to use constant and insert those constant in the register)
+
+*** Input and Output
+
+*** Control flow
+usually there is a sequential control flow
+
+JUMP -> can be unconditionally or condintionally
+
+** The Hack Computer and Machine Language
+
+*** Hack computer
++ 16-bit machine
+  + Data Memory (RAM) -> sequence of 16-bit registers
++ Instruction Memory (ROM) -> sequence of 16-bit registers
++ Central Processing Unit (CPU)
++ Instruction bus / data bus / address bus
+
+*** Hack computer software
+Two type of instructions, A or C each one is 16 bit long
+
+the computer will load from the rom the sequence of instruction, use the reset butotn and then execute it
+
+*** Registers
+Three registers:
++ D: holds a 16-bit value
++ A: holds a 16-bit value
++ M: represents the 16-bit RAM register addressed by A
+
+*** A-Instructions
+```
+@value
+```
+
+This has two effects:
++ register A is set to A
++ RAM[21] become the selected RAM register
+
+*** C-instruction
+```
+dest = comp; jump
+```
+
+comp = computation (manay types of things you can do with)
+des = destination, this can be null, and registers AMD or together
+jump = if the boolan expression (comp?) is true then jump to ROM[A] (the program is saved into the ROM and here A act as the Program Counter)
+
+Example:
+```
+@56 // A=56
+D-1;JEQ // if (D-1==0) goto ROM[56]
+
+0;JMP // unconditional jump
+```
+** Hack machine language
++ Symbolic Language
++ Binary Code
+
+@value => 0value
+
+the zero represent the A instruction and the last 15 bits are leaved for the non-negative decimal constant
+
+dest = comp; jump
+=>
+|       1 | 1 1      | a  c1 c2 c3 c4 c5 c6       | d1 d2 d3    | j1 j2 j3  |
+|---------+----------+----------------------------+-------------+-----------|
+| op code | not used | comp bits                  | dest bits   | jump bits |
+|---------+----------+----------------------------+-------------+-----------|
+|         |          | there is an entire         | there is    | another   |
+|         |          | table to describe          | a table     | table     |
+|         |          | what computation is        | to connect  |           |
+|         |          | describing the instruction | destination |           |
+|         |          |                            | to  table   |           |
+|---------+----------+----------------------------+-------------+-----------|
+
+*** Hack Program
+sequence of hack instructions
+** Input / Output
+
+How machine languages is used to describe the connection with the I/O devices (keybord, mouse or screen)
+
+Low level approach to communicate with the I/O
+
+To communicate with the screen is used a **Screen Memory Map** -> this area of the RAM is used describe what is displayed on the screen
+
+The Display unit is a MATRIX (256 by 512 black or white pixels) -> each value is composed by a word(16-bit) that contains 8 pixels of the screen (on=black and off=white)
+
+The memory is accesed by WORD -> this means that I always have to manipulate 16 bit at the time
+
+Each raw is composed by 32 word (row is composed by 32 * 16 bits)
+
+And the columns are composed by 256 bits, this means that there are 256 raws
+
+THIS MEANS THAT the pixel pointed by a row and col is the i-th word, i = 32*row + col/16
+
+The the pixel that we want to manipulate in that word is col % 16
