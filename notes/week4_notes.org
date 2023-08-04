@@ -103,6 +103,8 @@ dest = comp; jump
 sequence of hack instructions
 ** Input / Output
 
+*** Screen
+
 How machine languages is used to describe the connection with the I/O devices (keybord, mouse or screen)
 
 Low level approach to communicate with the I/O
@@ -120,3 +122,61 @@ And the columns are composed by 256 bits, this means that there are 256 raws
 THIS MEANS THAT the pixel pointed by a row and col is the i-th word, i = 32*row + col/16
 
 The the pixel that we want to manipulate in that word is col % 16
+
+*** Keyboard
+
+There is a keyboard memory map, but are only needed 16-bits, this means that only one register is required to manage the communication with the keyboard
+
+** Hack Programming Language
+*** Registers and Memorys
+The Hack Assembly manages access to memory and registers using only three registers: A, D and M
+
+The simulator will execute the hack program and continue infinitelly (PC increase every time), a computer NEVER stand still, we should create an inifite to end prperly the program
+
+**** Virtual Registers
+They are labled from R0 to R15 (the assembler will only translate RX to X)
+They are useful only because it makes easier to understand when the hack proram is accessing the first 16 registers of the machine (first 16 bytes of memory)
+**** Other symbols
+SCREEN -> 16384
+KBD -> 24576
+
+(base addresses of the maps)
+
+*** Branching
+
+To make jump easier LABELS are possible to be used, example:
+
+```
+
+@TEST // @2
+0;JMP
+
+(TEST) // line 2
+@10
+```
+
+*** Variables
+```
+@10
+D=A
+
+@temp // @16
+M=D
+```
+
+Every symbol that is NOT a lable is treated as a variable and translated into the assembler as a number, from 16
+
+Using symbolic stuff we can create RELOCATABLE programs
+
+*** Iteration
+Just the sum of previous stuff, better to before create the pseudo code and then translate every instruction
+
+*** Pointers
+
+```
+A=D+M // inside a loop we can continuosly modify A and store values in M
+```
+*** Input / Output
+#+ATTR_HTML: :widht 10
+[[file:images/input_output.png]]
+** Project overview
