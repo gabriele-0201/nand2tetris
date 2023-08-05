@@ -21,8 +21,6 @@
 // goto LOOP
 //
 // (END)
-//
-// NEW CODE
 
 // R2 = 0
 @R2
@@ -57,67 +55,3 @@ M=M+1
 
 (END)
 0;JMP
-
-// OLD CODE
-
-//// val  R0
-//@R0
-//D=M
-//// store the value in R0 inside the val
-//// and the sum variable
-//@val
-//M=D
-//
-//// sum = 0
-//@sum
-//M=0
-//
-//// times = R1
-//@R1
-//D=M
-//// store the times the val needs to be added
-//@times
-//M=D
-//
-//// i = 0
-//@i
-//M=0
-//
-//(LOOP)
-//
-////if(i >= times) goto END
-//@i
-//D=M
-//@times
-//D=D-M
-//@END
-//D;JGE
-//
-//// sum += val;
-//@sum
-//D=M
-//
-//@val
-//D=D+M
-//
-//@sum
-//M=D
-//
-//// i += 1
-//
-//@i
-//M=M+1
-//
-//@LOOP
-//0;JMP
-//
-////R2 = sum
-//(END)
-//@sum
-//D=M
-//@R2
-//M=D
-//
-//(FINALLOOP)
-//@FINALLOOP
-//0;JMP

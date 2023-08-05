@@ -119,7 +119,7 @@ Each raw is composed by 32 word (row is composed by 32 * 16 bits)
 
 And the columns are composed by 256 bits, this means that there are 256 raws
 
-THIS MEANS THAT the pixel pointed by a row and col is the i-th word, i = 32*row + col/16
+THIS MEANS THAT the pixel pointed by a row and col is in the i-th word, i = 32*row + col/16
 
 The the pixel that we want to manipulate in that word is col % 16
 
