@@ -1,0 +1,156 @@
+
+* Computer Architecture
+** Von Neumann Architecture
+
+
+*** CPU
+composed by: ALU + REGISTERS
+
+
+*** Memory
+here are stored Data and Programs
+
+
+*** Information Flows
+The information flow can be described by three main busses:
++ Control
++ Address
++ Data
+
+those flows will be managed by Busses
+
+
+
+*** ALU
+Input from the Data Bus and Output in the DataBas
+Of course also the Control Bus is needed to understand what to do with the Data and also the output of the ALU will control other things in the machine
+
+*** Registers
+Of course registers are connected in input or output into the registers,
+the registers needs to be connected also to Address because addresses will be inserted into registers
+
+
+*** Memory
+The address BUS will select the area we are working with, then the Data bus is obviously attached because is what is done with the memory
+**** Data Memory
+
+**** Program Memory
+Here are also needed some control bits, because from memory control bits need to be extracted (instructions)
+** Fetch-Execute Cycle
+Fetch-Execute Reteat
+What the CPU does:
++ Fetch the instruction: the address of the next instruction must be stored somewhere, usually in the PC, then the cpu should read the address and
+  SO: in the program counter is insered some values by a jump, increased the old one or something elese, this value is used to fetch the instruction from memory and then this should be executed
++ Execute the fethed instruction: the bits encode what is needed to be done, the instruction fetched from memory is feeded in the CONTROL BUS
+
+PROBLEM, in the fetch cycle the memory is addressed to extract the instruction and in the execute part the data used by the instruction should be addressed, this is solved using a MULTIPLEXER that select what to put in the address registers in both cycles
+
+*** Hardvard Architecture
+Variant of the von  Neunmann, data and proram memory is divided
+
+** Hack Central Processing Unit
+#+ATTR_HTML: :widht 10
+[[file:images/cpu.png]]
+
+Abstraction: 16-bit instruction is given to the CPU and it will execute it (+ what instruction execute next)
+
+*** Hack CPU Interface
+**** Theorically
+Input: Instruction and Data Memory
+Output: Data Memory
+**** Pratically
+Input:
++ 16-bit Data Value
+  Value of the currently selected Data Memory Register
++ 16-bit Instruction
+  Value of the Selected Instruction memory register
++ 1-bit Reset
+Output:
++ 16-bit outM
+  What we want to emit
++ 1-bit writeM
+  We want to write it to memory?
++ 16-bit addressM
+  Where in memory?
++ 16-bit PC
+  new value to be insered in the PC
+
+*** CPU Implementation
+#+ATTR_HTML: :widht 10
+[[file:images/cpu_implementation.png]]
+C = control bits
+
+What this architecture actually does?
++ How instruction are feeded?
+  instruction need to be decoded and based on what the instruciton is the multiplexer will select the correct input, example:
+  A-instruction -> inside the instruction there is a 15 bit value that will be stored in the A register
+  C-instruciton -> the opcode will be used to select the correct input in the multiplexer and the result of the ALU will be insered into A
++ How ALU operates?
+  As we seee the ALU continuosly takes inputs, and gives output, what is taken as input is:
+  + From D-register
+  + From A-register / M-register (which one is defined by the multiplexer that will make the decision based on the provided control bits that are part of the instruction)
+  And the ouptup is gived by the inputs and the control bits that defines which function apply to the inputs
+  The value output is fed into three different dors: A, D registers and the output of the CPU -> the contorl bits will define where the output will actually goes (destination bits)
+
+  The ALU outputs ALSO some control outputs, important for the CONTROL LOGIC of the CPU
+
++ Control Logic
+  The condition bits define logical jumps, but what deos the PC?
+  PC:
+  + to start / restart the program (reset) PC = 0
+  + no jump: PC++, it is normally incremented
+  + JMP (goto): PC = A
+  + conditional goto: the value of PC depends on the output of the ALU's control bits or PC++
+
+    Pseudo code:
+    ```
+    if(reset==1) PC=0
+    else
+        load = f(jump_bits, ALU_control_outputs)
+        if(load==1) PC=A // OK conditional JUMP
+        else PC++ // no conditional jump
+    ```
+
++ Reset input?
+  some sort of reset standard button, used to reset the execution of the loaded program
+
+** The Hack Computer Architecture
+Now the architecture is composed by the CPU + memory + Screen and KBD
+
+*** CPU
+There is an interface and the operation is describe above
+
+*** Data Memory
+
+abstraction 3 segments:
+0-16k: RAM
+16k-24k: SCREEN
+last bit: KBD
+
+in reality: there are three different chips, the RAM16K + Screen (RAM8K) + KBD (Register 1-bit)
+
+BITS? how all this memory can be addressed?
+
+*** ROM (Instruction Memory)
+Buit-in ROM chip that is able to load things from compoter and then the Hack computer is able to use the ROM chip to fetch instructions
+
+It is a read only chip, it contains the INSTRUCTIONS:
+Input: address
+Output: ROM32K[address] = instruction
+
+the input MUST be the PC and the output is the current instruction that needs to be executed
+
+** Hack Computer implementation
+#+ATTR_HTML: :widht 10
+[[file:images/computer_implementation.png]]
+
+** Project Overview
+*** CPU
+Chips-parts + unpack control bits to route instrucitons to the correct chips + ALU's output control bits
+
+*** RAM
+Just some dem / mul to combine the three required parts of the RAM
+
+*** ROM
+
+*** Computer

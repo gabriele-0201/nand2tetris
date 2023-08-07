@@ -39,5 +39,99 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    
+    // the value in A-instructions is only 15-bit but we can
+    // use directly all the instruction as input becuase
+    // the msb = 0 encode the A-instruction
+    Mux16(a=instruction, b=aluOut, sel=instruction[15], out=aRegisterIn);
+
+    // The Load pin in the register A:
+    // if A-instruction (msb 0) then the register must load the value
+    // if C-instruction the loading in the register depends on the 
+    Not(in=instruction[15], out=aInstruction);
+    Or(a=aInstruction, b=instruction[5], out=aRegisterLoad);
+
+    // Register A
+    ARegister(in=aRegisterIn, load=aRegisterLoad, out=aRegisterOut, out[0..14]=addressM, out=PCin);
+
+    // The Load pin in the register D:
+    // if A-instruction then DON'T load
+    // if C-instruction then it depends on the 4th bit
+    And(a=instruction[15], b=instruction[4], out=dRegisterLoad);
+
+    // Register D
+    DRegister(in=aluOut, load=dRegisterLoad, out=dRegisterOut);
+
+    // This Mux will select the second argument of the
+    // ALU, the computation bits works always on D and
+    // if instruction[12] then inM
+    // else then aRegisterOut
+    Mux16(a=aRegisterOut, b=inM, sel=instruction[12], out=aluSecondParameter);
+
+    And(a=instruction[15], b=instruction[3], out=writeM);
+
+    // // The Load pin in the OUT register :
+    // // if A-instruction then DON'T load
+    // // if C-instruction then it depends on the 3th bit
+    // And(a=instruction[15], b=instruction[3], out=outRegisterLoad);
+
+    // // OutRegister (non ho capito al 100% perche' qui e' richiesto un registro)
+    // Register(in=aluOut, load=outRegisterLoad, out=outM);
+
+    // ALU use directly the computational bits 
+    // specified in the instruction
+    // it always work, even if with A-instruction, 
+    // if the result is useless it is automatically discarted
+    ALU(
+        x=dRegisterOut,
+        y=aluSecondParameter,
+        zx=instruction[11],
+        nx=instruction[10],
+        zy=instruction[9],
+        ny=instruction[8],
+        f=instruction[7],
+        no=instruction[6],
+        out=aluOut,
+        out=outM,
+        zr=jeq,
+        zr=zr,
+        ng=ng
+    );
+
+    Not(in=ng, out=notNg);
+    Not(in=zr, out=jne, out=notZr);
+
+    And(a=notNg,b=notZr, out=jgt, out=jgtJge);
+
+    And(a=ng,b=notZr, out=jlt);
+
+    Or(a=jgtJge, b=jeq, out=jge);
+
+    Or(a=jlt, b=jeq, out=jle);
+
+    // MUX8WAY
+    Mux(a=false, b=jgt, sel=instruction[0], out=temp11);
+    Mux(a=jeq, b=jge, sel=instruction[0], out=temp12);
+
+    Mux(a=temp11, b=temp12, sel=instruction[1], out=temp1);
+
+    Mux(a=jlt, b=jne, sel=instruction[0], out=temp21);
+    Mux(a=jle, b=true, sel=instruction[0], out=temp22);
+
+    Mux(a=temp21, b=temp22, sel=instruction[1], out=temp2); 
+
+    Mux(a=temp1, b=temp2, sel=instruction[2], out=load);
+
+    // The load should only work if the input is a C-Instruction
+    And(a=instruction[15], b=load, out=loadFinal);
+
+    PC(
+       in=PCin,
+       load=loadFinal,
+       inc=true,
+       reset=reset,
+       out[0..14]=pc
+    );
+
+
 }

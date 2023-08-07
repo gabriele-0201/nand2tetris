@@ -27,5 +27,23 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    // 0-16k: RAM
+    // 16k-24k: SCREEN
+    // last bit: KBD
+
+    DMux(in=load, sel=address[14], a=loadRAM, b=loadScreenOrKbd);
+    DMux(in=loadScreenOrKbd, sel=address[13], a=loadScreen, b=loadKbd);
+
+    RAM16K(in=in, load=loadRAM, address=address[0..13], out=outRam);
+
+    //DMux(in=loadScreen, sel=address[12], a=loadScreen1, b=loadScreen2);
+    //RAM4K(in=in, load=loadScreen1, address=address[0..11], out=outScreen1);
+    //RAM4K(in=in, load=loadScreen2, address=address[0..11], out=outScreen2);
+    //Mux16(a=outScreen1, b=outScreen2, sel=address[12], out=outScreen);
+    Screen(in=in, load=loadScreen, address=address[0..12], out=outScreen);
+
+    Keyboard(out=outKbd);
+
+    Mux16(a=outScreen, b=outKbd, sel=address[13], out=outScreenOrKbd);
+    Mux16(a=outRam, b=outScreenOrKbd, sel=address[14], out=out);
 }
