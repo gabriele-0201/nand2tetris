@@ -1,0 +1,68 @@
+#+TITLE:weeek6_notes
+
+* Assembly Languages and Assembler
+** Assemble Logic
+
+   1. Read the nexr Assembly instruction
+   2. Break into different fields (remove whitespaces)
+   3. Lookup binary representation
+   4. combine codes into a single machine language command
+
+   + Handling symbols is really important,
+   assembler must replace symbols with addresses or other things,
+   how? Thanks to a **symbols table**
+
+   Let's start now think how the assembler would work:
+   1. the assembler finds a symbols
+   2. checks if it is present in the table
+      2.1 if there's no symbol then it is a variable and a new area of the
+      memory must be allocated, then will be inserted in the table to be used
+      later on
+   3. if it is a label declaration and ofc is not in the table it MUST be
+   inserted to be used later
+   4. if it is not present BUT it is definel later as symbol later then
+   MULTIPLE phases must be done on the code (or using a side table to
+   remember which lable where not defined yet and when it was time going back
+   and fix it)
+      Multiple phases: the fist pass is made to extract all the lables and
+      then to substitute all the symbol with the correct lable or variables
+** Hack Assembly Language Translator Perspective
++ The translator should translate to a symbolyx syntax to a binary syntax
++ Hack language
+  + A-instruction
+  + C-instruction
+  + Symbols with their pre-defined value
+  + Label declaration
+  + Variables
++ White spaces
+  Empty lines + indentation
+
+*** How Symbols will be managed? (later)
+
+*** The first assembler will only deal with:
++ White Spaces
+  Those will be IGNORED (whitespaces + emptylines + comments)
++ Instructions (A-C)
+  Now there are only plain instructions, we need to deal with this
+** Symbol-less assembler
+A-instruction -> easy
+C-instruction -> a parser is needed
+** Assembler WITH SYMBOLS
+*** Possible symbols:
++ Variables: represent memory locations where the programmer wants to mantain values
+
+  The assambler must implement this abstraction, any symbol that is not  pre-defined or a lable then is a variable, each variable is uniquely assigned to a memory address, starting from 16
+
+  Every new values will be associated with the next free memory address and then the values will be replaced in the codes
+
++ Lables
+  destination of gotos
+  they are pseudo-commands (because they are NOT really assemblly commands)
+  All the lable will be then translated into the number of the instruction after the defined lable
+  how is managed in a A-instruction? just replace with its values
++ Pre-Defined Symbols
+  special memory locations, those symbols appear only in A-instructions, we just need to translate it into their number representations
+** Symbol Table
+1. Initialization: Add all the Pre-Defined symbols
+2. First Pass: Scan the text file and look for lable declaration + counting real instruction to exract the number that needs to be associated with the lable
+3. Second Pass: add al the variables (every missing symbol) and associate numbers from 16
