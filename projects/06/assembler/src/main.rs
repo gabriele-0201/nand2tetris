@@ -1,4 +1,5 @@
 mod instructions;
+mod symbols;
 
 use instructions::Instruction;
 
@@ -57,6 +58,8 @@ fn main() {
         assembly.pop();
     }
 
+    // Resolve all symbols
+    symbols::resolve_symbols(&mut assembly);
     // Parse the code to a sequence of Instructions
     let instructions: Vec<Instruction> = assembly
         .into_iter()
@@ -64,6 +67,7 @@ fn main() {
         .map(|(i, x)| Instruction::parse(x).expect(format!("Error in instruciton {i}").as_str()))
         .collect();
 
+    // Encode the instructions into their binary representation
     let hack_code = instructions
         .iter()
         .map(|i| i.encode())
