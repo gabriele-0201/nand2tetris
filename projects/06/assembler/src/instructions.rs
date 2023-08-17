@@ -84,10 +84,10 @@ impl Instruction {
         }
         // TODO: check that every substring is a valid instruction
         let dest = instruction[0..dest_ub].to_string();
-        println!("dest: {dest}");
+        //println!("dest: {dest}");
         check!(dest, DEST_MAP);
         let comp = instruction[if dest_ub == 0 { 0 } else { dest_ub + 1 }..jump_lb].to_string();
-        println!("comp: {comp}");
+        //println!("comp: {comp}");
         check!(comp, COMP_MAP);
         let jump = instruction[if jump_lb == instruction.len() {
             instruction.len()
@@ -95,7 +95,7 @@ impl Instruction {
             jump_lb + 1
         }..instruction.len()]
             .to_string();
-        println!("jump: {jump}");
+        //println!("jump: {jump}");
         check!(jump, JUMP_MAP);
         Ok(Instruction::C(dest, comp, jump))
     }
